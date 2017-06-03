@@ -61,7 +61,7 @@ fn eval(program: std::vec::Vec<Op>, machine: &mut VM) {
     }
 }
 
-fn compile(input: String, pos: usize) -> std::vec::Vec<Op> {
+fn _compile(input: String, pos: usize) -> std::vec::Vec<Op> {
     let mut res = Vec::new();
 
     while res.len() < input.len() {
@@ -76,7 +76,7 @@ fn compile(input: String, pos: usize) -> std::vec::Vec<Op> {
             '[' => {
                 // recursively compile loop block
                 let abs = pos + res.len();
-                let sub1 = compile(input[res.len() + 1..].to_string(), abs + 1);
+                let sub1 = _compile(input[res.len() + 1..].to_string(), abs + 1);
                 res.push(Op::JmpIfZero(abs + sub1.len() + 1));
                 res.extend(sub1);
             },
@@ -84,10 +84,14 @@ fn compile(input: String, pos: usize) -> std::vec::Vec<Op> {
                 res.push(Op::Jmp(pos - 1));
                 return res;
             },
-            _ => println!("Throwaway: {}", ch)
+            _ => ()
         }
     }
     return res;
+}
+
+fn compile(input: String) -> std::vec::Vec<Op> {
+    return _compile(input.chars().filter(|ch| "<.[+-],>".chars().any(|y| y == *ch)).collect(), 0);
 }
 
 fn main() {
@@ -97,7 +101,7 @@ fn main() {
     let mut vm = VM {mem: vec![0], ptr: 0};
  
     for argument in &args[1..] {
-        let program = compile(argument.to_string(), 0);
+        let program = compile(argument.to_string());
         eval(program, &mut vm);
     }
 }
