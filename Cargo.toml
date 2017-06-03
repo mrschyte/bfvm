@@ -1,0 +1,6 @@
+[package]
+name = "bfvm"
+version = "0.1.0"
+authors = ["Peter Kasza <peter.kasza@itinsight.hu>"]
+
+[dependencies]
